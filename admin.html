@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة التحكم | متجر عين</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: #0d0700;
+      color: #fff;
+      min-height: 100vh;
+      direction: rtl;
+    }
+
+    /* LOGIN */
+    #login-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .login-box {
+      background: linear-gradient(145deg, #1a0e00, #2a1500);
+      border: 1px solid rgba(224,90,20,0.35);
+      border-radius: 18px;
+      padding: 40px 36px;
+      width: min(400px, 100%);
+      box-shadow: 0 0 60px rgba(224,90,20,0.15);
+      text-align: center;
+    }
+    .login-box img { width: 72px; margin-bottom: 16px; filter: drop-shadow(0 0 12px rgba(224,90,20,0.6)); }
+    .login-box h1 { font-size: 22px; font-weight: 900; margin-bottom: 6px; }
+    .login-box p { font-size: 13px; color: rgba(255,255,255,0.45); margin-bottom: 28px; }
+    .login-box input {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #fff;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 15px;
+      outline: none;
+      margin-bottom: 14px;
+      text-align: center;
+      letter-spacing: 3px;
+    }
+    .login-box input:focus { border-color: rgba(224,90,20,0.6); }
+    .login-btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, #e05a14, #c44a0a);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .login-btn:hover { opacity: 0.88; }
+    .login-err { color: #ff7a7a; font-size: 13px; margin-top: 10px; display: none; }
+
+    /* DASHBOARD */
+    #dashboard { display: none; }
+
+    .topbar {
+      background: linear-gradient(90deg, #1a0900, #2a1000);
+      border-bottom: 1px solid rgba(224,90,20,0.2);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .topbar-brand img { width: 36px; filter: drop-shadow(0 0 6px rgba(224,90,20,0.5)); }
+    .topbar-brand span { font-size: 17px; font-weight: 900; }
+    .topbar-brand span small { font-weight: 400; font-size: 12px; color: rgba(255,255,255,0.4); margin-right: 6px; }
+    .topbar-actions { display: flex; gap: 10px; align-items: center; }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.65);
+      font-family: 'Tajawal', sans-serif;
+      font-size: 13px;
+      padding: 7px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-outline:hover { border-color: rgba(224,90,20,0.5); color: #fff; }
+
+    .content { padding: 28px 24px; max-width: 1200px; margin: 0 auto; }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: linear-gradient(145deg, #1a0e00, #231200);
+      border: 1px solid rgba(224,90,20,0.2);
+      border-radius: 14px;
+      padding: 20px 18px;
+    }
+    .stat-card .stat-label { font-size: 12px; color: rgba(255,255,255,0.45); margin-bottom: 8px; }
+    .stat-card .stat-value { font-size: 32px; font-weight: 900; color: #e05a14; line-height: 1; }
+    .stat-card .stat-sub { font-size: 11px; color: rgba(255,255,255,0.3); margin-top: 4px; }
+
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .table-header h2 { font-size: 17px; font-weight: 800; }
+    .search-box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 8px 14px;
+      color: #fff;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 13px;
+      outline: none;
+      width: 220px;
+    }
+    .search-box:focus { border-color: rgba(224,90,20,0.5); }
+
+    .table-wrap {
+      background: linear-gradient(145deg, #160a00, #1e0e00);
+      border: 1px solid rgba(224,90,20,0.15);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: rgba(224,90,20,0.1); }
+    thead th {
+      padding: 13px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.55);
+      text-align: right;
+      white-space: nowrap;
+    }
+    tbody tr {
+      border-top: 1px solid rgba(255,255,255,0.04);
+      transition: background 0.15s;
+    }
+    tbody tr:hover { background: rgba(224,90,20,0.05); }
+    tbody td {
+      padding: 13px 16px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.85);
+      vertical-align: middle;
+    }
+    tbody td.id-col { color: rgba(255,255,255,0.3); font-size: 12px; }
+    tbody td.email-col { font-size: 12.5px; direction: ltr; text-align: right; }
+    tbody td.phone-col { direction: ltr; text-align: right; }
+    .badge {
+      display: inline-block;
+      background: rgba(224,90,20,0.15);
+      border: 1px solid rgba(224,90,20,0.3);
+      color: #e07a44;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .date-col { font-size: 11.5px; color: rgba(255,255,255,0.4); direction: ltr; text-align: right; }
+    .del-btn {
+      background: rgba(255,80,80,0.1);
+      border: 1px solid rgba(255,80,80,0.2);
+      color: rgba(255,120,120,0.8);
+      font-size: 12px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Tajawal', sans-serif;
+      transition: all 0.15s;
+    }
+    .del-btn:hover { background: rgba(255,80,80,0.2); color: #ff8080; }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: rgba(255,255,255,0.25);
+    }
+    .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+
+    .loading-row td { text-align: center; padding: 40px; color: rgba(255,255,255,0.3); font-size: 14px; }
+
+    @media (max-width: 600px) {
+      .content { padding: 16px 12px; }
+      .search-box { width: 100%; }
+      thead th:nth-child(4), tbody td:nth-child(4) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <img src="/logo.png" alt="3YN" />
+    <h1>لوحة التحكم</h1>
+    <p>أدخل كلمة المرور للدخول</p>
+    <input type="password" id="pass-input" placeholder="••••••••" />
+    <button class="login-btn" id="login-btn">دخول</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="topbar">
+    <div class="topbar-brand">
+      <img src="/logo.png" alt="3YN" />
+      <span>متجر عين <small>لوحة التحكم</small></span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn-outline" id="refresh-btn">↻ تحديث</button>
+      <button class="btn-outline" id="export-btn">⬇ تصدير CSV</button>
+      <button class="btn-outline" id="logout-btn">خروج</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">إجمالي الطلبات</div>
+        <div class="stat-value" id="stat-total">—</div>
+        <div class="stat-sub">منذ البداية</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">طلبات اليوم</div>
+        <div class="stat-value" id="stat-today">—</div>
+        <div class="stat-sub">آخر 24 ساعة</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">آخر طلب</div>
+        <div class="stat-value" id="stat-last" style="font-size:14px;padding-top:8px;color:#fff;">—</div>
+        <div class="stat-sub">وقت الاستلام</div>
+      </div>
+    </div>
+
+    <div class="table-header">
+      <h2>قائمة الطلبات</h2>
+      <input type="text" class="search-box" id="search-input" placeholder="🔍 بحث بالبريد أو الجوال..." />
+    </div>
+
+    <div class="table-wrap">
+      <table id="orders-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>البريد الإلكتروني</th>
+            <th>البريد الاحتياطي</th>
+            <th>رقم الجوال</th>
+            <th>المنتج</th>
+            <th>التاريخ</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="orders-body">
+          <tr class="loading-row"><td colspan="7">جارٍ التحميل...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  let adminToken = null;
+  let allOrders = [];
+
+  const $ = id => document.getElementById(id);
+
+  function formatDate(iso) {
+    const d = new Date(iso);
+    return d.toLocaleDateString('ar-SA', { day:'2-digit', month:'short', year:'numeric' })
+      + ' ' + d.toLocaleTimeString('ar-SA', { hour:'2-digit', minute:'2-digit' });
+  }
+
+  function timeSince(iso) {
+    const diff = Date.now() - new Date(iso).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'الآن';
+    if (mins < 60) return `${mins} د`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs} س`;
+    return `${Math.floor(hrs/24)} ي`;
+  }
+
+  function renderOrders(orders) {
+    const tbody = $('orders-body');
+    if (!orders.length) {
+      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📭</div><p>لا توجد طلبات بعد</p></div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = orders.map(o => `
+      <tr>
+        <td class="id-col">${o.id}</td>
+        <td class="email-col">${o.email}</td>
+        <td class="email-col">${o.alt_email || '<span style="color:rgba(255,255,255,0.2)">—</span>'}</td>
+        <td class="phone-col">${o.phone}</td>
+        <td><span class="badge">${o.product || 'يوتيوب بريميوم'}</span></td>
+        <td class="date-col" title="${formatDate(o.created_at)}">${timeSince(o.created_at)}</td>
+        <td><button class="del-btn" onclick="deleteOrder(${o.id})">حذف</button></td>
+      </tr>
+    `).join('');
+  }
+
+  function updateStats(orders) {
+    $('stat-total').textContent = orders.length;
+    const today = orders.filter(o => {
+      return new Date(o.created_at).toDateString() === new Date().toDateString();
+    });
+    $('stat-today').textContent = today.length;
+    if (orders.length > 0) {
+      $('stat-last').textContent = timeSince(orders[0].created_at);
+    }
+  }
+
+  async function loadOrders() {
+    try {
+      const res = await fetch('/api/orders', { headers: { 'x-admin-token': adminToken } });
+      const data = await res.json();
+      if (data.success) {
+        allOrders = data.orders;
+        renderOrders(allOrders);
+        updateStats(allOrders);
+      }
+    } catch (e) {
+      $('orders-body').innerHTML = `<tr class="loading-row"><td colspan="7">تعذّر تحميل البيانات</td></tr>`;
+    }
+  }
+
+  async function deleteOrder(id) {
+    if (!confirm('هل أنت متأكد من حذف هذا الطلب؟')) return;
+    await fetch(`/api/orders/${id}`, { method: 'DELETE', headers: { 'x-admin-token': adminToken } });
+    loadOrders();
+  }
+
+  async function login() {
+    const pass = $('pass-input').value;
+    $('login-err').style.display = 'none';
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pass })
+      });
+      const data = await res.json();
+      if (data.success) {
+        adminToken = data.token;
+        $('login-screen').style.display = 'none';
+        $('dashboard').style.display = 'block';
+        loadOrders();
+      } else {
+        $('login-err').textContent = data.error || 'خطأ';
+        $('login-err').style.display = 'block';
+      }
+    } catch (e) {
+      $('login-err').textContent = 'تعذّر الاتصال بالخادم';
+      $('login-err').style.display = 'block';
+    }
+  }
+
+  function exportCSV() {
+    if (!allOrders.length) return;
+    const headers = ['ID', 'Email', 'Alt Email', 'Phone', 'Product', 'Date'];
+    const rows = allOrders.map(o => [
+      o.id, o.email, o.alt_email || '', o.phone, o.product, new Date(o.created_at).toLocaleString('ar-SA')
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `orders_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  }
+
+  $('login-btn').addEventListener('click', login);
+  $('pass-input').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+  $('refresh-btn').addEventListener('click', loadOrders);
+  $('export-btn').addEventListener('click', exportCSV);
+  $('logout-btn').addEventListener('click', () => { adminToken = null; location.reload(); });
+
+  $('search-input').addEventListener('input', function() {
+    const q = this.value.toLowerCase();
+    const filtered = q ? allOrders.filter(o =>
+      o.email.toLowerCase().includes(q) ||
+      (o.alt_email || '').toLowerCase().includes(q) ||
+      o.phone.includes(q)
+    ) : allOrders;
+    renderOrders(filtered);
+  });
+</script>
+</body>
+</html>

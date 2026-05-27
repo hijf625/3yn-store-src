@@ -1,2 +1,1 @@
-# 3yn-store-src
-متجر عين - YouTube Premium Store with admin dashboard
+# 3yn-store
